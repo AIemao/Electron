@@ -1,54 +1,38 @@
-# React + TypeScript + Vite
+# 🚀 Aplicativo Desktop com Electron + React + TypeScript
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![Electron](https://img.shields.io/badge/Electron-2B2E3A?style=for-the-badge&logo=electron&logoColor=9FEAF9)](https://www.electronjs.org/)
+[![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-Currently, two official plugins are available:
+Repositório de estudos do curso **[Build a Desktop App with Electron & React](https://www.youtube.com/watch?v=JXr5jT1Yq4A)** ministrado por [@NiklasZiermann](https://github.com/N-Ziermann-YouTube).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> **Current Status** ⏳  
+> Progresso atual do curso: **DX Improvements (0:29:07)**  
+> Código atualizado até esta seção do tutorial
 
-## Expanding the ESLint configuration
+## 🧑💻 Sobre o Projeto
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Este repositório contém a implementação prática das primeiras etapas do curso de desenvolvimento de aplicações desktop usando:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- **Electron** para criação da aplicação nativa
+- **React** para construção da interface
+- **TypeScript** para tipagem estática
+- **Electron-Builder** para empacotamento
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ✅ Funcionalidades Implementadas
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Até o momento (0:29:07):
+- Configuração inicial do React
+- Integração com Electron
+- Adição de TypeScript
+- Configuração do Electron-Builder
+- Melhorias de Developer Experience (DX)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## 🚧 Funcionalidades Previstas (Curso Completo)
+
+De acordo com o plano do curso:
+- [ ] Leitura de recursos do sistema
+- [ ] Comunicação segura UI<->Backend
+- [ ] Visualização de dados
+- [ ] Elementos de Tray
+- [ ] Testes E2E/Unitários
