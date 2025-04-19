@@ -41,8 +41,9 @@ Implementação modular de uma aplicação desktop multiplataforma utilizando:
 
 | Script | Descrição |
 |--------|-----------|
+| `dev` | **Novo!** Executa dev:react e dev:electron simultaneamente com apenas um comando |
 | `dev:react` | Inicia o ambiente de desenvolvimento React usando Vite |
-| `dev:electron` | Executa o Electron em modo de desenvolvimento |
+| `dev:electron` | Executa transpile:electron automaticamente e depois inicia o Electron em modo de desenvolvimento |
 | `build` | Compila TypeScript e gera build de produção do React (cria pasta `dist-react`) |
 | `lint` | Executa ESLint para verificar e corrigir problemas de formatação e estilo no código |
 | `preview` | Inicia um servidor para pré-visualizar a versão de produção do React |
@@ -52,7 +53,9 @@ Implementação modular de uma aplicação desktop multiplataforma utilizando:
 | `dist:linux` | Gera o executável para Linux (x64) |
 
 ### Fluxo de Desenvolvimento
-1. Execute `dev:react` e `dev:electron` em terminais separados para desenvolvimento
+1. Execute `npm run dev` para iniciar todo o ambiente de desenvolvimento com apenas um comando
+   - Isso inicia tanto o servidor React quanto o aplicativo Electron em paralelo
+   - O transpile:electron é executado automaticamente como parte do processo
 2. O processo de build completo segue a sequência:
    - `build` - Compila o código React
    - `transpile:electron` - Compila o código Electron
