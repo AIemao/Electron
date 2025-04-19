@@ -5,8 +5,6 @@
 [![TypeScript Version](https://img.shields.io/badge/TypeScript-5.0.2-%23007ACC.svg)](https://www.typescriptlang.org/)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 
-Repositório referente ao curso **[Building Modern Desktop Applications](https://www.youtube.com/watch?v=JXr5jT1Yq4A)** ministrado por Niklas Ziermann.
-
 ## 📋 Project Overview
 
 Implementação modular de uma aplicação desktop multiplataforma utilizando:
@@ -38,3 +36,24 @@ Implementação modular de uma aplicação desktop multiplataforma utilizando:
 **Pré-requisitos:**
 - Node.js 18.x
 - npm 9.x+
+
+## 🚀 Scripts do Projeto
+
+| Script | Descrição |
+|--------|-----------|
+| `dev:react` | Inicia o ambiente de desenvolvimento React usando Vite |
+| `dev:electron` | Executa o Electron em modo de desenvolvimento |
+| `build` | Compila TypeScript e gera build de produção do React (cria pasta `dist-react`) |
+| `lint` | Executa ESLint para verificar e corrigir problemas de formatação e estilo no código |
+| `preview` | Inicia um servidor para pré-visualizar a versão de produção do React |
+| `transpile:electron` | Compila o código TypeScript do processo principal do Electron (cria pasta `dist-electron`) |
+| `dist:mac` | Gera o executável para macOS (arm64) |
+| `dist:win` | Gera o executável para Windows (x64) |
+| `dist:linux` | Gera o executável para Linux (x64) |
+
+### Fluxo de Desenvolvimento
+1. Execute `dev:react` e `dev:electron` em terminais separados para desenvolvimento
+2. O processo de build completo segue a sequência:
+   - `build` - Compila o código React
+   - `transpile:electron` - Compila o código Electron
+   - Distribuição com comando específico para plataforma (`dist:mac`, `dist:win` ou `dist:linux`)
