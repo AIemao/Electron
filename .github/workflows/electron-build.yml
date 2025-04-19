@@ -1,0 +1,60 @@
+name: Build Electron App
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    # Permite executar o workflow manualmente através da interface do GitHub
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [18.x]
+    
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Instalar dependências
+        run: npm ci
+      
+      - name: Lint
+        run: npm run lint
+      
+      - name: Build React e Electron
+        run: |
+          npm run transpile:electron
+          npm run build
+      
+      - name: Build para Windows
+        if: matrix.os == 'windows-latest'
+        run: npm run dist:win
+      
+      - name: Build para macOS
+        if: matrix.os == 'macos-latest'
+        run: npm run dist:mac
+      
+      - name: Build para Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run dist:linux
+      
+      - name: Upload artefatos
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-app-${{ matrix.os }}
+          path: |
+            dist
+            dist-electron
+            release
