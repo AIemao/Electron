@@ -4,31 +4,30 @@ const tsPlugin = require('@typescript-eslint/eslint-plugin');
 const reactHooks = require('eslint-plugin-react-hooks');
 const reactRefresh = require('eslint-plugin-react-refresh');
 
-// Incluir configurações diretamente no array em vez de usar "extends"
+// Configuração simplificada para evitar problemas com tsconfig
 module.exports = [
   js.configs.recommended,
   {
-    ignores: ['dist', 'dist-electron', 'dist-react', 'node_modules'],
+    ignores: ['dist', 'dist-electron', 'dist-react', 'release'],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
-        // Removemos a referência ao projeto de TypeScript específico para evitar erros
-        // Isso desativa a verificação de tipos no ESLint, mas evita os erros
+        // Removendo a referência ao tsconfig para evitar problemas
       },
+      // Definindo globals explicitamente
       globals: {
-        window: true,
-        document: true,
-        navigator: true,
-        // Adicionar ambiente Node.js para resolver o problema do __dirname
-        __dirname: true,
-        __filename: true,
-        process: true,
-        require: true,
-        module: true,
-        exports: true
+        window: 'readonly',
+        document: 'readonly',
+        console: 'readonly',
+        process: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        require: 'readonly',
+        module: 'readonly',
+        exports: 'readonly'
       },
     },
     plugins: {
@@ -36,14 +35,12 @@ module.exports = [
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
     },
+    // Usando apenas regras básicas que não exigem type checking
     rules: {
-      // Regras básicas sem necessidade de verificação de tipos
       ...tsPlugin.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'no-undef': 'off', // Desabilitando esta regra para evitar conflitos com TypeScript
     },
   },
 ];

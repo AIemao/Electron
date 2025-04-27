@@ -28,8 +28,18 @@ jobs:
       - name: Instalar dependências
         run: npm ci
       
+      - name: Exibir informações de diagnóstico
+        run: |
+          echo "Node version:"
+          node --version
+          echo "NPM version:"
+          npm --version
+          echo "ESLint version:"
+          npx eslint --version
+      
       - name: Lint
         run: npm run lint
+        continue-on-error: false  # Falha se o lint encontrar erros
       
       - name: Build React e Electron
         run: |
