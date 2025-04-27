@@ -23,3 +23,15 @@ dist-electron
 *.njsproj
 *.sln
 *.sw?
+
+
+ROADMAP.md
+
+# Pastas a serem ignoradas
+Header/
+Footer/
+ConfigJson/
+EnvBack/
+Firebird/
+Logs/
+Pages/

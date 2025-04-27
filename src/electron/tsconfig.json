@@ -1,19 +1,16 @@
 {
-    "compilerOptions": {
-      // requer tipos estritos (proteção contra null, undefined e outros erros comuns de tipagem)
-      // ativa todas as verificações rigorosas de tipo, melhorando a segurança do código
-      "strict": true,
-      // instrui o TypeScript a gerar sintaxe ECMAScript moderna (ES2022+)
-      // permite usar os recursos mais recentes da linguagem JavaScript
-      "target": "ESNext",
-      // instrui o TypeScript a usar o sistema de módulos compatível com Node.js
-      // suporta tanto imports ESM quanto require CommonJS, ideal para aplicações Electron
-      "module": "NodeNext",
-      // define o diretório de saída para os arquivos JavaScript transpilados
-      // mantém organizada a estrutura do projeto separando código fonte de código compilado
-      "outDir": "../../dist-electron",
-      // ignora erros de tipagem nas bibliotecas de terceiros
-      // útil quando dependências externas têm definições de tipos problemáticas
-      "skipLibCheck": true,
-    }
+  "extends": "../../tsconfig.json",  // se você tiver um tsconfig na raiz
+  "compilerOptions": {
+    "outDir": "../../dist-electron",
+    "rootDir": ".",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": false,
+    "resolveJsonModule": true
+  },
+  "include": ["*.ts"]
 }

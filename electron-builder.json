@@ -1,15 +1,13 @@
 {
     "appId": "com.example.electronApp",
-    "files": ["dist-electron", "dist-react"],
+    "files": [
+      "dist-electron/**/*",
+      "dist-react/**/*",
+      "desktopIcon.png"
+    ],
     "icon": "./desktopIcon.png",
-    "mac": {
-        "target": "dmg"
-    },
-    "linux": {
-        "target": "AppImage",
-        "category": "Utility"
-    },
-    "win": {
-        "target": ["msi", "portable"]
-    }
-}
+    "mac": { "target": "dmg" },
+    "linux": { "target": "AppImage", "category": "Utility" },
+    "win": { "target": ["msi", "portable"] }
+  }
+  

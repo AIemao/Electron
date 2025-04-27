@@ -14,6 +14,10 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "jsxImportSource": "react",       // aponta para o pacote que exporta React.JSX
+    "baseUrl": "./src",               // (opcional) para imports absolutos
+    "paths": { "@/*": ["*"] }, // (opcional) para imports absolutos
+    "resolveJsonModule": true,
 
     /* Linting */
     "strict": true,
