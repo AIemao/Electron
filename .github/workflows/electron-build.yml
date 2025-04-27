@@ -3,8 +3,6 @@ name: Build Electron App
 on:
   push:
     branches: [ main, AAMaster ]
-  pull_request:
-    branches: [ main, AAMaster ]
   workflow_dispatch:
     # Permite executar o workflow manualmente através da interface do GitHub
 
@@ -14,7 +12,7 @@ jobs:
     
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest]
         node-version: [18.x]
     
     steps:
@@ -41,14 +39,6 @@ jobs:
       - name: Build para Windows
         if: matrix.os == 'windows-latest'
         run: npm run dist:win
-      
-      # - name: Build para macOS
-      #   if: matrix.os == 'macos-latest'
-      #   run: npm run dist:mac
-      
-      # - name: Build para Linux
-      #   if: matrix.os == 'ubuntu-latest'
-      #   run: npm run dist:linux
       
       - name: Upload artefatos
         uses: actions/upload-artifact@v4
