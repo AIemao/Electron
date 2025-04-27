@@ -4,7 +4,9 @@ const tsPlugin = require('@typescript-eslint/eslint-plugin');
 const reactHooks = require('eslint-plugin-react-hooks');
 const reactRefresh = require('eslint-plugin-react-refresh');
 
+// Incluir configurações diretamente no array em vez de usar "extends"
 module.exports = [
+  js.configs.recommended,
   {
     ignores: ['dist'],
     files: ['**/*.{ts,tsx}'],
@@ -13,12 +15,11 @@ module.exports = [
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
-        project: ['./tsconfig.app.json'],       // linting tipado
+        project: ['./tsconfig.app.json'],
         tsconfigRootDir: __dirname,
         extraFileExtensions: ['.ts', '.tsx'],
       },
       globals: {
-        // Definindo globals manualmente em vez de usar js.globals.browser
         window: true,
         document: true,
         navigator: true,
@@ -30,14 +31,10 @@ module.exports = [
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
     },
-    extends: [
-      js.configs.recommended,
-      'plugin:@typescript-eslint/recommended',
-      'plugin:@typescript-eslint/recommended-requiring-type-checking',
-      'plugin:react-hooks/recommended',
-      'plugin:react-refresh/only-export-components',
-    ],
     rules: {
+      // Incorporar regras dos plugins diretamente
+      ...tsPlugin.configs.recommended.rules,
+      ...tsPlugin.configs['recommended-requiring-type-checking'].rules,
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': [
         'warn',
