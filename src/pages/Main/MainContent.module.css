@@ -1,0 +1,19 @@
+.content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .dashboardContainer {
+    display: flex;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+  .menu {
+    flex: 1;
+  }
+  .detail {
+    flex: 1;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  

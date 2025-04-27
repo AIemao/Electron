@@ -61,7 +61,10 @@ Implementação modular de uma aplicação desktop multiplataforma utilizando:
    - `transpile:electron` - Compila o código Electron
    - Distribuição com comando específico para plataforma (`dist:mac`, `dist:win` ou `dist:linux`)
 3. Testes antes de iniciar o build:
-   - Antes de criar os instaladores finais com o electron-builder, você pode simular o comportamento de produção da sua aplicação rodando-a direto da pasta empacotada. Para isso: `NODE_ENV=production electron .`
+   - Antes de criar os instaladores finais com o electron-builder, você pode simular o comportamento de produção da sua aplicação rodando-a direto da pasta empacotada. Para isso: 
+   - `build` - Compila o código React
+   - `transpile:electron` - Compila o código Electron
+   - `npx cross-env NODE_ENV=production electron .`
    - Dessa forma, você valida localmente se tudo está carregando corretamente antes de rodar `electron-builder --mac / --win / --linux` para gerar os instaladores finais.
 
 ## 🔀 Instruções para Desenvolvimento
