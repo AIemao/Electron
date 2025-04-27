@@ -39,7 +39,6 @@ jobs:
       
       - name: Lint
         run: npm run lint
-        continue-on-error: false  # Falha se o lint encontrar erros
       
       - name: Build React e Electron
         run: |

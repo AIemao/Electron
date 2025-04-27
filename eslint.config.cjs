@@ -8,7 +8,20 @@ const reactRefresh = require('eslint-plugin-react-refresh');
 module.exports = [
   js.configs.recommended,
   {
-    ignores: ['dist', 'dist-electron', 'dist-react', 'release'],
+    // Usando o sistema correto de ignorar arquivos para configuração flat
+    ignores: [
+      'dist/**',
+      'dist-electron/**',
+      'dist-react/**',
+      'release/**',
+      'node_modules/**',
+      '.github/**',
+      'out/**',
+      '**/*.min.js',
+      '**/*.bundle.js',
+      '**/*.config.js',
+      'vite.config.ts'
+    ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: tsParser,
