@@ -17,7 +17,13 @@ module.exports = [
         tsconfigRootDir: __dirname,
         extraFileExtensions: ['.ts', '.tsx'],
       },
-      globals: js.globals.browser,
+      globals: {
+        // Definindo globals manualmente em vez de usar js.globals.browser
+        window: true,
+        document: true,
+        navigator: true,
+        browser: true
+      },
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
