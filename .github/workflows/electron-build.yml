@@ -3,8 +3,6 @@ name: Build Electron App
 on:
   push:
     branches: [ main, AAMaster ]
-  pull_request:
-    branches: [ main, AAMaster ]
   workflow_dispatch:
     # Permite executar o workflow manualmente através da interface do GitHub
 
