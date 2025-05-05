@@ -30,12 +30,11 @@ ROADMAP.md
 # Pastas a serem ignoradas
 Header/
 Footer/
-ConfigJson/
+# ConfigJson/
 EnvBack/
 Firebird/
 Logs/
 # Pages/
-ConfigJson/
 EnvBack/
 Firebird/
 Logs/
