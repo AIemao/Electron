@@ -2,7 +2,6 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import fs from 'fs/promises';
 import { isDev } from './utils.js';
-import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -62,7 +61,7 @@ ipcMain.handle('write-config-file', async (_, filePath: string, content: string)
   }
 });
 
-function createWindow() {
+async function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -74,21 +73,23 @@ function createWindow() {
     },
   });
 
-  if (isDev()) {
-    // Instala o React DevTools no modo de desenvolvimento:
-    installExtension(REACT_DEVELOPER_TOOLS)
-    .then((extension) =>
-      console.log(`Extensão adicionada: ${extension.name || extension}`)
-    )
-    .catch((err: Error) =>
-      console.error('Erro ao adicionar extensão:', err)
-    ); 
-    mainWindow.loadURL('http://localhost:5123');
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
-  } else {
-    mainWindow.loadFile(
-      path.join(app.getAppPath(), 'dist-react', 'index.html')
-    );
+  try {
+    if (isDev()) {
+      // Instala o React DevTools no modo de desenvolvimento:
+      const { default: installExtension, REACT_DEVELOPER_TOOLS } =
+        await import('electron-devtools-installer');
+      await installExtension(REACT_DEVELOPER_TOOLS)
+        .then((name) => console.log(`Extensão instalada: ${name}`))
+        .catch((err) => console.error('Falha ao instalar DevTools:', err));
+      await mainWindow.loadURL('http://localhost:5123');
+      mainWindow.webContents.openDevTools({ mode: 'detach' });
+    } else {
+      await mainWindow.loadFile(
+        path.join(app.getAppPath(), 'dist-react', 'index.html')
+      );
+    }
+  } catch (error) {
+    console.error('Erro ao carregar a janela:', error);
   }
 
   mainWindow.on('closed', () => {
