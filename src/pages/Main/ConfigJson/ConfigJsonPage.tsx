@@ -17,6 +17,54 @@ interface ConfigHistory {
   lastModified: Date;
 }
 
+// Interface para o JSON de configuração
+interface ConfigJson {
+  // Propriedades básicas
+  url?: string;
+  __url?: string;
+  
+  // Configurações de ambiente e endpoints
+  REACT_APP_BFF_ENDPOINT?: string;
+  REACT_APP_API_ENDPOINT_PRODUCTSALL?: string;
+  REACT_APP_CASHDESK_ENDPOINT?: string;
+  REACT_APP_DEGUST_ONE_ORDER_ENDPOINT?: string;
+  REACT_APP_ROUTING_ENDPOINT?: string;
+  REACT_APP_SOCKETMANAGER_ENDPOINT?: string;
+  REACT_APP_RESHOP_ENDPOINT?: string;
+  
+  // Configurações de terminal e loja
+  REACT_APP_TERMINALID?: number;
+  retailerId?: string;
+  posId?: number;
+  posType?: number;
+  REACT_APP_STORE_SERVER_ID?: number;
+  REACT_APP_STORE_FRANCHISE_ID?: number;
+  REACT_APP_STORE_ID?: number;
+  
+  // Configurações de layout
+  FRONT_APP_LAYOUT?: string;
+  REACT_APP_LAYOUT_STYLE?: string;
+  REACT_APP_PISTA_DRIVE?: number;
+  REACT_APP_VAGA_DRIVE?: number;
+  
+  // Configurações de impressora
+  printer?: {
+    name?: string;
+    port?: string;
+  };
+  
+  // Configurações de TEF
+  tef?: {
+    pinpadPort?: string;
+  };
+  
+  // Configurações de DANFE
+  danfe?: Record<string, unknown>;
+  
+  // Permite propriedades adicionais que não conhecemos
+  [key: string]: unknown;
+}
+
 // Constante para o caminho padrão
 const DEFAULT_CONFIG_PATH = 'C:\\AutoAtendimentoOne\\pdv_cloud\\config.json';
 
@@ -36,7 +84,7 @@ const ENVIRONMENT_UNLOCK_PASSWORD = '123';
 const ConfigJsonPage = (): React.ReactElement => {
   const navigate = useNavigate();
   const [jsonContent, setJsonContent] = useState<string>(DEFAULT_WARNING_MESSAGE);
-  const [parsedJson, setParsedJson] = useState<any>({});
+  const [parsedJson, setParsedJson] = useState<ConfigJson>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -66,11 +114,39 @@ const ConfigJsonPage = (): React.ReactElement => {
   const [pistaDrive, setPistaDrive] = useState<number>(1);
   const [vagaDrive, setVagaDrive] = useState<number>(1);
 
+  // Função para salvar no sessionStorage
+  const saveToSessionStorage = useCallback((filePath: string, content: string) => {
+    try {
+      console.log("Salvando conteúdo no sessionStorage para:", filePath);
+      sessionStorage.setItem(SS_CONFIG_JSON_CONTENT, content);
+      sessionStorage.setItem(SS_CONFIG_JSON_PATH, filePath);
+      
+      // Atualizar histórico com o caminho completo
+      const now = new Date();
+      const newHistoryItem: ConfigHistory = {
+        path: filePath,
+        lastModified: now
+      };
+      
+      const updatedHistory = [
+        newHistoryItem,
+        ...configHistory.filter(item => item.path !== filePath).slice(0, 4) // Manter apenas os 5 mais recentes
+      ];
+      
+      setConfigHistory(updatedHistory);
+      sessionStorage.setItem(SS_CONFIG_JSON_HISTORY, JSON.stringify(updatedHistory));
+      
+    } catch (e) {
+      console.error('Erro ao salvar no sessionStorage:', e);
+      setError('Não foi possível salvar no armazenamento de sessão. O arquivo pode ser muito grande.');
+    }
+  }, [configHistory]);
+
   // Efeito para analisar o JSON quando o conteúdo muda
   useEffect(() => {
     try {
       if (jsonContent && jsonContent !== DEFAULT_WARNING_MESSAGE) {
-        const parsed = JSON.parse(jsonContent);
+        const parsed = JSON.parse(jsonContent) as ConfigJson;
         setParsedJson(parsed);
         
         // Detectar ambiente com base nos endpoints
@@ -142,7 +218,7 @@ const ConfigJsonPage = (): React.ReactElement => {
 
     if (savedHistory) {
       try {
-        const parsedHistory = JSON.parse(savedHistory);
+        const parsedHistory = JSON.parse(savedHistory) as ConfigHistory[];
         setConfigHistory(parsedHistory);
       } catch (e) {
         console.error('Erro ao carregar histórico:', e);
@@ -252,34 +328,6 @@ const ConfigJsonPage = (): React.ReactElement => {
     baseApiUrl, offlineIp, pistaDrive, vagaDrive
   ]);
 
-  // Função para salvar no sessionStorage
-  const saveToSessionStorage = (filePath: string, content: string) => {
-    try {
-      console.log("Salvando conteúdo no sessionStorage para:", filePath);
-      sessionStorage.setItem(SS_CONFIG_JSON_CONTENT, content);
-      sessionStorage.setItem(SS_CONFIG_JSON_PATH, filePath);
-      
-      // Atualizar histórico com o caminho completo
-      const now = new Date();
-      const newHistoryItem: ConfigHistory = {
-        path: filePath,
-        lastModified: now
-      };
-      
-      const updatedHistory = [
-        newHistoryItem,
-        ...configHistory.filter(item => item.path !== filePath).slice(0, 4) // Manter apenas os 5 mais recentes
-      ];
-      
-      setConfigHistory(updatedHistory);
-      sessionStorage.setItem(SS_CONFIG_JSON_HISTORY, JSON.stringify(updatedHistory));
-      
-    } catch (e) {
-      console.error('Erro ao salvar no sessionStorage:', e);
-      setError('Não foi possível salvar no armazenamento de sessão. O arquivo pode ser muito grande.');
-    }
-  };
-
   // Tratamento para seleção de arquivo via input (Procurar)
   const handleFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -306,8 +354,9 @@ const ConfigJsonPage = (): React.ReactElement => {
           let fullPath = '';
           
           // Tentar obter o caminho completo do arquivo usando a API do File System
-          if ((file as any).path) {
-            fullPath = (file as any).path;
+          const fileWithPath = file as File & { path?: string };
+          if (fileWithPath.path) {
+            fullPath = fileWithPath.path;
           } else {
             // Se não conseguirmos o caminho completo, usar pelo menos o nome do arquivo
             fullPath = file.name;
@@ -337,7 +386,7 @@ const ConfigJsonPage = (): React.ReactElement => {
       };
       reader.readAsText(file);
     }
-  }, [configHistory]);
+  }, [saveToSessionStorage]);
 
   // Aplicar alterações do formulário para o JSON
   const handleApplyChanges = useCallback(() => {
@@ -347,7 +396,7 @@ const ConfigJsonPage = (): React.ReactElement => {
       setSuccessMessage('Alterações aplicadas com sucesso!');
       setTimeout(() => setSuccessMessage(null), 3000);
     }
-  }, [updateJsonFromForm, currentFilePath]);
+  }, [updateJsonFromForm, currentFilePath, saveToSessionStorage]);
 
   // Copiar para área de transferência
   const handleCopyToClipboard = useCallback(() => {
@@ -378,7 +427,7 @@ const ConfigJsonPage = (): React.ReactElement => {
       console.error('Erro ao copiar JSON:', error);
       setError('JSON inválido. Verifique a sintaxe antes de copiar.');
     }
-  }, [updateJsonFromForm, currentFilePath, configHistory]);
+  }, [updateJsonFromForm, currentFilePath, saveToSessionStorage]);
 
   // Limpar sessionStorage
   const handleClearSessionStorage = () => {
