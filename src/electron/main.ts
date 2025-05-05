@@ -1,7 +1,14 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
+import fs from 'fs/promises';
 import { isDev } from './utils.js';
 import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// Criar equivalentes para __dirname e __filename em ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -18,14 +25,50 @@ if (!isRunning) {
     }
   });
 }
+
+// Handlers para leitura e escrita de arquivos config.json
+ipcMain.handle('read-config-file', async (_, filePath: string) => {
+  try {
+    const content = await fs.readFile(filePath, 'utf-8');
+    return { success: true, content };
+  } catch (error) {
+    console.error('Erro ao ler arquivo:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Erro desconhecido' 
+    };
+  }
+});
+
+ipcMain.handle('write-config-file', async (_, filePath: string, content: string) => {
+  try {
+    // Cria um backup antes de salvar
+    const backupPath = `${filePath}.backup-${Date.now()}`;
+    try {
+      const originalContent = await fs.readFile(filePath, 'utf-8');
+      await fs.writeFile(backupPath, originalContent);
+    } catch (err) {
+      console.warn('Não foi possível criar backup:', err);
+    }
+    
+    await fs.writeFile(filePath, content, 'utf-8');
+    return { success: true };
+  } catch (error) {
+    console.error('Erro ao escrever arquivo:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Erro desconhecido' 
+    };
+  }
+});
+
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 768,
+    width: 1200,
+    height: 800,
     webPreferences: {
-      //TODO: adicionar segurança ao app:
-      // se você usar preload scripts:
-      // preload: path.join(__dirname, 'preload.js'),
+      // IMPORTANTE: Configurar o preload script
+      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
     },

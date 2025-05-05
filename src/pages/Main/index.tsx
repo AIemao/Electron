@@ -7,6 +7,7 @@ const Main = (): React.ReactElement => {
   const navigate = useNavigate();
   const actions: Action[] = [
     { label: 'Verificar Configurações', onClick: () => navigate('/config') },
+    { label: 'Editar Config.json', onClick: () => navigate('/config-json') }, // Nova ação
     { label: 'Limpar Cache',               onClick: () => {/* … */} },
     { label: 'Executar Migration',         onClick: () => {/* … */} },
   ];
