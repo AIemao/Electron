@@ -75,12 +75,22 @@ async function createWindow() {
 
   try {
     if (isDev()) {
-      // Instala o React DevTools no modo de desenvolvimento:
-      const { default: installExtension, REACT_DEVELOPER_TOOLS } =
-        await import('electron-devtools-installer');
-      await installExtension(REACT_DEVELOPER_TOOLS)
-        .then((name) => console.log(`Extensão instalada: ${name}`))
-        .catch((err) => console.error('Falha ao instalar DevTools:', err));
+      try {
+        // Abordagem mais segura de importação
+        const devTools = await import('electron-devtools-installer');
+        const installExtension = devTools.default || devTools.installExtension;
+        const REACT_DEVELOPER_TOOLS = devTools.REACT_DEVELOPER_TOOLS;
+        
+        if (typeof installExtension === 'function') {
+          const name = await installExtension(REACT_DEVELOPER_TOOLS);
+          console.log(`Extensão instalada: ${name}`);
+        } else {
+          console.warn('installExtension não é uma função. Tipo:', typeof installExtension);
+        }
+      } catch (err) {
+        console.error('Falha ao instalar DevTools:', err);
+      }
+      
       await mainWindow.loadURL('http://localhost:5123');
       mainWindow.webContents.openDevTools({ mode: 'detach' });
     } else {
