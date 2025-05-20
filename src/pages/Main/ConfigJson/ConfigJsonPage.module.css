@@ -1,4 +1,4 @@
-/* Reset e base styles */
+/* ===== LAYOUT PRINCIPAL ===== */
 .fullScreenContainer {
   width: 100vw;
   height: 100vh;
@@ -10,6 +10,7 @@
   background-color: #f8f9fa;
 }
 
+/* Header e navegação */
 .header {
   display: flex;
   align-items: center;
@@ -35,7 +36,7 @@
   text-align: center;
 }
 
-/* Barra de ambiente fixa */
+/* ===== BARRA DE AMBIENTE ===== */
 .environmentBar {
   position: sticky;
   top: 0;
@@ -51,6 +52,8 @@
   display: flex;
   align-items: center;
   padding: 5px 0;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .environmentLabel {
@@ -59,7 +62,47 @@
   color: #343a40;
 }
 
-/* Main content layout */
+/* Opções de radio */
+.radioGroup {
+  display: flex;
+  gap: 20px;
+}
+
+.radioGroup label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.radioGroup input {
+  margin-right: 5px;
+}
+
+.activeEnvironment {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Botão de cadeado */
+.lockButton {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+.lockButton:hover {
+  transform: scale(1.2);
+}
+
+/* ===== LAYOUT DO CONTEÚDO PRINCIPAL ===== */
 .mainContent {
   display: flex;
   flex: 1 1 0;
@@ -69,6 +112,7 @@
   height: 100%;
 }
 
+/* Painéis esquerdo e direito */
 .configPanel,
 .jsonEditorPanel {
   height: 100%;
@@ -84,7 +128,6 @@
   overflow-y: auto;
   background-color: #ffffff;
   border-right: 1px solid #dee2e6;
-  box-sizing: border-box;
 }
 
 .jsonEditorPanel {
@@ -112,7 +155,14 @@
   max-width: 100%;
 }
 
-/* Config sections */
+/* ===== SEÇÕES DE CONFIGURAÇÃO ===== */
+.sectionsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
 .configSection {
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
@@ -130,32 +180,20 @@
   padding-bottom: 4px;
 }
 
-.configSection .formGrid {
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-
-@media (max-width: 1024px) {
-  .configSection .formGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Form styles */
-.formGroup {
-  margin-bottom: 8px;
-}
-
+/* ===== ELEMENTOS DE FORMULÁRIO ===== */
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px 12px;
 }
 
-@media (max-width: 1024px) {
-  .formGrid {
-    grid-template-columns: 1fr;
-  }
+.configSection .formGrid {
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.formGroup {
+  margin-bottom: 8px;
 }
 
 .formGroup label {
@@ -185,48 +223,7 @@
   box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
 
-/* Radio options */
-.radioGroup {
-  display: flex;
-  gap: 20px;
-}
-
-.radioGroup label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.radioGroup input {
-  margin-right: 5px;
-}
-
-.activeEnvironment {
-  font-weight: bold;
-  color: #007bff;
-}
-
-/* Lock button */
-.lockButton {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  margin-left: 15px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  vertical-align: middle;
-}
-
-.lockButton:hover {
-  transform: scale(1.2);
-}
-
-/* URL Preview */
+/* ===== URL PREVIEW ===== */
 .urlPreviewBox {
   margin-top: 15px;
   margin-bottom: 0;
@@ -256,7 +253,7 @@
   word-break: break-all;
 }
 
-/* Action buttons */
+/* ===== BOTÕES DE AÇÃO ===== */
 .actionButtons {
   display: flex;
   flex-wrap: wrap;
@@ -288,7 +285,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .browseButton:hover {
   background-color: #5a6268;
 }
@@ -297,7 +293,6 @@
   background-color: #007bff;
   color: white;
 }
-
 .copyButton:hover {
   background-color: #0069d9;
 }
@@ -306,12 +301,11 @@
   background-color: #dc3545;
   color: white;
 }
-
 .clearButton:hover {
   background-color: #c82333;
 }
 
-/* Messages */
+/* ===== MENSAGENS ===== */
 .errorMessage {
   background-color: #f8d7da;
   color: #721c24;
@@ -330,12 +324,12 @@
   border-left: 4px solid #c3e6cb;
 }
 
-/* Hide input */
+/* ===== ELEMENTOS AUXILIARES ===== */
 .hiddenInput {
   display: none;
 }
 
-/* Modal de senha */
+/* ===== MODAL DE SENHA ===== */
 .passwordModal {
   position: fixed;
   top: 0;
@@ -402,23 +396,18 @@
   cursor: pointer;
 }
 
-/* Grid para seções lado a lado */
-.sectionsRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
+/* ===== RESPONSIVIDADE ===== */
 @media (max-width: 1024px) {
-  .sectionsRow {
+  .sectionsRow,
+  .configSection .formGrid,
+  .formGrid {
     grid-template-columns: 1fr;
+  }
+  
+  .sectionsRow {
     gap: 8px;
   }
-}
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
   .mainContent {
     flex-direction: column;
     height: 100%;
@@ -459,10 +448,6 @@
   
   .editorContainer {
     min-height: 300px;
-  }
-  
-  .formGrid {
-    grid-template-columns: 1fr;
   }
   
   .environmentSection {
