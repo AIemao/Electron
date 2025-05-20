@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 const Main = (): React.ReactElement => {
   const navigate = useNavigate();
   const actions: Action[] = [
-    { label: 'Verificar Configurações', onClick: () => navigate('/config') },
-    { label: 'Editar Config.json', onClick: () => navigate('/config-json') }, // Nova ação
+    { label: 'Consulta PDV Delphi', onClick: () => navigate('/firebird') }, // Ajustado aqui
+    { label: 'Editar Config.json', onClick: () => navigate('/config-json') },
     { label: 'Limpar Cache',               onClick: () => {/* … */} },
     { label: 'Executar Migration',         onClick: () => {/* … */} },
   ];
