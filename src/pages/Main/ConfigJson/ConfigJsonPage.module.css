@@ -1,7 +1,9 @@
 /* Reset e base styles */
 .fullScreenContainer {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
+  min-height: 100vh;
+  min-width: 100vw;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -60,62 +62,54 @@
 /* Main content layout */
 .mainContent {
   display: flex;
-  flex: 1;
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
   overflow: hidden;
-  height: calc(100vh - 110px); /* Altura total menos o header e environmentBar */
+  height: 100%;
+}
+
+.configPanel,
+.jsonEditorPanel {
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .configPanel {
-  width: 50%; /* Exatamente metade da largura */
-  flex: 0 0 50%; /* Não permitir encolher ou expandir */
-  padding: 15px;
+  width: 50%;
+  flex: 1 1 0;
+  padding: 10px 8px;
   overflow-y: auto;
   background-color: #ffffff;
   border-right: 1px solid #dee2e6;
-  height: 100%;
+  box-sizing: border-box;
 }
 
 .jsonEditorPanel {
-  width: 50%; /* Exatamente metade da largura */
-  flex: 0 0 50%; /* Não permitir encolher ou expandir */
+  width: 50%;
+  flex: 1 1 0;
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: 44px;
   background-color: #f8f9fa;
-  height: 100%;
-  overflow-y: hidden;
+  overflow: hidden;
+  border-left: 2px solid #dee2e6;
+  border-right: 2px solid #dee2e6;
 }
 
 .editorContainer {
-  flex-grow: 1;
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+  height: 100%;
+  overflow: auto;
   border: 1px solid #dee2e6;
   border-radius: 4px;
-  overflow: hidden;
-  height: calc(100% - 60px); /* Altura total menos o título e mensagens */
-}
-
-/* File path display */
-.currentFileBox {
-  background-color: #e9ecef;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 10px 15px;
-  margin-bottom: 15px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.currentFileLabel {
-  font-weight: bold;
-  color: #495057;
-  margin-right: 10px;
-}
-
-.currentFilePath {
-  font-family: monospace;
-  color: #0066cc;
-  word-break: break-all;
+  box-sizing: border-box;
+  background: #fff;
+  max-width: 100%;
 }
 
 /* Config sections */
@@ -123,45 +117,65 @@
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
   border-radius: 4px;
-  padding: 15px;
-  margin-bottom: 20px;
+  padding: 10px 8px;
+  margin-bottom: 12px;
 }
 
 .configSection h3 {
   margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.2rem;
+  margin-bottom: 8px;
+  font-size: 1.05rem;
   color: #343a40;
   border-bottom: 1px solid #dee2e6;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
+}
+
+.configSection .formGrid {
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+@media (max-width: 1024px) {
+  .configSection .formGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Form styles */
 .formGroup {
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 .formGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+}
+
+@media (max-width: 1024px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .formGroup label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   font-weight: 500;
   color: #495057;
+  width: 100%;
+  font-size: 0.97rem;
 }
 
 .formGroup input, 
 .formGroup select {
   width: 100%;
-  padding: 8px 10px;
+  padding: 6px 8px;
   border: 1px solid #ced4da;
   border-radius: 4px;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  box-sizing: border-box;
 }
 
 .formGroup input:focus, 
@@ -214,11 +228,13 @@
 
 /* URL Preview */
 .urlPreviewBox {
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 15px;
   margin-top: 15px;
+  margin-bottom: 0;
+  padding: 15px;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+  background: #fff;
+  box-sizing: border-box;
 }
 
 .urlPreviewBox h4 {
@@ -228,9 +244,9 @@
 }
 
 .urlPreviewBox ul {
-  list-style-type: none;
   padding-left: 0;
   margin: 0;
+  list-style: none;
 }
 
 .urlPreviewBox li {
@@ -261,24 +277,20 @@
 .browseButton {
   background-color: #6c757d;
   color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 1rem;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .browseButton:hover {
   background-color: #5a6268;
-}
-
-.applyButton {
-  background-color: #28a745;
-  color: white;
-}
-
-.applyButton:hover {
-  background-color: #218838;
-}
-
-.applyButton:disabled {
-  background-color: #a3d7b5;
-  cursor: not-allowed;
 }
 
 .copyButton {
@@ -316,35 +328,6 @@
   border-radius: 4px;
   margin-bottom: 15px;
   border-left: 4px solid #c3e6cb;
-}
-
-/* History section */
-.historySection {
-  padding: 15px;
-  background-color: #ffffff;
-  border-top: 1px solid #dee2e6;
-}
-
-.historyTitle {
-  margin-top: 0;
-  font-size: 1rem;
-  color: #495057;
-}
-
-.historyList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.historyItem {
-  padding: 8px 0;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.historyItemText {
-  font-size: 0.9rem;
-  color: #6c757d;
 }
 
 /* Hide input */
@@ -419,33 +402,42 @@
   cursor: pointer;
 }
 
-/* Help text styles */
-.helpText {
-  font-size: 0.8rem;
-  color: #6c757d;
-  margin-top: 5px;
+/* Grid para seções lado a lado */
+.sectionsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 1024px) {
+  .sectionsRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
 }
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .mainContent {
     flex-direction: column;
+    height: 100%;
   }
   
   .configPanel, .jsonEditorPanel {
     width: 100%;
-    max-height: none;
-  }
-  
-  .configPanel {
-    border-right: none;
-    border-bottom: 1px solid #dee2e6;
-    overflow-y: visible;
-    height: auto;
+    flex: none;
+    height: 50%;
+    max-height: 50%;
+    min-height: 0;
   }
   
   .jsonEditorPanel {
-    height: 500px;
+    padding: 20px;
+    border-left: none;
+    border-top: 2px solid #dee2e6;
+    border-right: none;
+    border-bottom: 2px solid #dee2e6;
   }
 }
 
@@ -453,18 +445,22 @@
   .mainContent {
     flex-direction: column;
     height: auto;
-    overflow: visible;
+    min-height: 0;
   }
   
   .configPanel, .jsonEditorPanel {
     width: 100%;
-    flex: none;
     height: auto;
+    max-height: none;
+    min-height: 0;
+    padding: 10px;
+    border: none;
   }
   
   .editorContainer {
-    min-height: 500px;
+    min-height: 300px;
   }
+  
   .formGrid {
     grid-template-columns: 1fr;
   }
@@ -482,56 +478,4 @@
     margin-left: 0;
     margin-top: 10px;
   }
-  .inputWithButton {
-    display: flex;
-    gap: 5px;
-    align-items: center;
-  }
-  
-  .selectWithButton {
-    flex-grow: 1;
-    padding: 8px 10px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 1rem;
-  }
-  
-  .refreshButton {
-    background: none;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    padding: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 38px;
-    width: 38px;
-    transition: background-color 0.2s;
-  }
-  
-  .refreshButton:hover {
-    background-color: #f0f0f0;
-  }
-  
-  .refreshButton:active {
-    background-color: #e0e0e0;
-    transform: scale(0.95);
-  }
-  
-  .refreshButton:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-  .forceButton {
-    background-color: #ffc107;
-    color: #000;
-  }
-  
-  .forceButton:hover {
-    background-color: #e0a800;
-  }
 }
-

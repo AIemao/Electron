@@ -6,16 +6,9 @@ import { useNavigate } from 'react-router-dom';
 // Constantes para as chaves no sessionStorage
 const SS_CONFIG_JSON_CONTENT = 'config_json_content';
 const SS_CONFIG_JSON_PATH = 'config_json_path';
-const SS_CONFIG_JSON_HISTORY = 'config_json_history';
 
 // Tipo para o editor Monaco
 type MonacoEditorType = Parameters<OnMount>[0];
-
-// Interface para histórico de arquivos
-interface ConfigHistory {
-  path: string;
-  lastModified: Date;
-}
 
 // Interface para o JSON de configuração
 interface ConfigJson {
@@ -89,7 +82,6 @@ const ConfigJsonPage = (): React.ReactElement => {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editorRef = useRef<MonacoEditorType | null>(null);
-  const [configHistory, setConfigHistory] = useState<ConfigHistory[]>([]);
   const [currentFilePath, setCurrentFilePath] = useState<string>('');
   
   // Estados para configurações específicas
@@ -120,27 +112,11 @@ const ConfigJsonPage = (): React.ReactElement => {
       console.log("Salvando conteúdo no sessionStorage para:", filePath);
       sessionStorage.setItem(SS_CONFIG_JSON_CONTENT, content);
       sessionStorage.setItem(SS_CONFIG_JSON_PATH, filePath);
-      
-      // Atualizar histórico com o caminho completo
-      const now = new Date();
-      const newHistoryItem: ConfigHistory = {
-        path: filePath,
-        lastModified: now
-      };
-      
-      const updatedHistory = [
-        newHistoryItem,
-        ...configHistory.filter(item => item.path !== filePath).slice(0, 4) // Manter apenas os 5 mais recentes
-      ];
-      
-      setConfigHistory(updatedHistory);
-      sessionStorage.setItem(SS_CONFIG_JSON_HISTORY, JSON.stringify(updatedHistory));
-      
     } catch (e) {
       console.error('Erro ao salvar no sessionStorage:', e);
       setError('Não foi possível salvar no armazenamento de sessão. O arquivo pode ser muito grande.');
     }
-  }, [configHistory]);
+  }, []);
 
   // Efeito para analisar o JSON quando o conteúdo muda
   useEffect(() => {
@@ -205,7 +181,6 @@ const ConfigJsonPage = (): React.ReactElement => {
     
     const savedContent = sessionStorage.getItem(SS_CONFIG_JSON_CONTENT);
     const savedPath = sessionStorage.getItem(SS_CONFIG_JSON_PATH);
-    const savedHistory = sessionStorage.getItem(SS_CONFIG_JSON_HISTORY);
 
     if (savedContent) {
       setJsonContent(savedContent);
@@ -214,15 +189,6 @@ const ConfigJsonPage = (): React.ReactElement => {
 
     if (savedPath) {
       setCurrentFilePath(savedPath);
-    }
-
-    if (savedHistory) {
-      try {
-        const parsedHistory = JSON.parse(savedHistory) as ConfigHistory[];
-        setConfigHistory(parsedHistory);
-      } catch (e) {
-        console.error('Erro ao carregar histórico:', e);
-      }
     }
   }, []);
 
@@ -388,16 +354,6 @@ const ConfigJsonPage = (): React.ReactElement => {
     }
   }, [saveToSessionStorage]);
 
-  // Aplicar alterações do formulário para o JSON
-  const handleApplyChanges = useCallback(() => {
-    const updatedJson = updateJsonFromForm();
-    if (updatedJson && currentFilePath) {
-      saveToSessionStorage(currentFilePath, updatedJson);
-      setSuccessMessage('Alterações aplicadas com sucesso!');
-      setTimeout(() => setSuccessMessage(null), 3000);
-    }
-  }, [updateJsonFromForm, currentFilePath, saveToSessionStorage]);
-
   // Copiar para área de transferência
   const handleCopyToClipboard = useCallback(() => {
     try {
@@ -435,7 +391,6 @@ const ConfigJsonPage = (): React.ReactElement => {
       sessionStorage.clear();
       setJsonContent(DEFAULT_WARNING_MESSAGE);
       setCurrentFilePath('');
-      setConfigHistory([]);
       setSuccessMessage('SessionStorage foi limpo com sucesso!');
       setTimeout(() => setSuccessMessage(null), 3000);
     }
@@ -502,11 +457,13 @@ const ConfigJsonPage = (): React.ReactElement => {
           >
             {ambienteDesbloqueado ? '🔓' : '🔒'}
           </button>
-        </div>
-      </div>
-      
-      <div className={styles.mainContent}>
-        <div className={styles.configPanel}>
+          <button
+            onClick={handleOpenFileDialog}
+            className={styles.browseButton}
+            style={{ marginLeft: 12 }}
+          >
+            Carregar JSON
+          </button>
           <input
             type="file"
             ref={fileInputRef}
@@ -514,24 +471,119 @@ const ConfigJsonPage = (): React.ReactElement => {
             accept=".json"
             className={styles.hiddenInput}
           />
-          
-          {currentFilePath && (
-            <div className={styles.currentFileBox}>
-              <span className={styles.currentFileLabel}>Arquivo atual:</span>
-              <span className={styles.currentFilePath}>{currentFilePath}</span>
+        </div>
+      </div>
+      
+      <div className={styles.mainContent}>
+        <div className={styles.configPanel}>
+          <div className={styles.sectionsRow}>
+            <div className={styles.configSection}>
+              <h3>Configurações de Terminal</h3>
+              <div className={styles.formGroup}>
+                <label htmlFor="terminalId">REACT_APP_TERMINALID:</label>
+                <input 
+                  type="number" 
+                  id="terminalId"
+                  value={terminalId} 
+                  onChange={(e) => setTerminalId(Number(e.target.value))} 
+                />
+              </div>
             </div>
-          )}
-          
-          <div className={styles.configSection}>
-            <h3>Configurações de Terminal</h3>
-            <div className={styles.formGroup}>
-              <label htmlFor="terminalId">REACT_APP_TERMINALID:</label>
-              <input 
-                type="number" 
-                id="terminalId"
-                value={terminalId} 
-                onChange={(e) => setTerminalId(Number(e.target.value))} 
-              />
+            <div className={styles.configSection}>
+              <h3>Configurações de Layout</h3>
+              <div className={styles.formGrid}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="layoutApp">FRONT_APP_LAYOUT:</label>
+                  <select 
+                    id="layoutApp"
+                    value={layoutApp} 
+                    onChange={(e) => setLayoutApp(e.target.value)}
+                  >
+                    <option value="AAONE">AAONE</option>
+                    <option value="BOBS">BOBS</option>
+                    <option value="HABIBS">HABIBS</option>
+                    <option value="RAGAZZO">RAGAZZO</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label htmlFor="layoutStyle">REACT_APP_LAYOUT_STYLE:</label>
+                  <select 
+                    id="layoutStyle"
+                    value={layoutStyle} 
+                    onChange={(e) => setLayoutStyle(e.target.value)}
+                  >
+                    <option value="SHOP">SHOP</option>
+                    <option value="DRIVE">DRIVE</option>
+                  </select>
+                </div>
+              </div>
+              
+              {layoutStyle === 'DRIVE' && (
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="pistaDrive">REACT_APP_PISTA_DRIVE:</label>
+                    <input 
+                      type="number" 
+                      id="pistaDrive"
+                      value={pistaDrive} 
+                      onChange={(e) => setPistaDrive(Number(e.target.value))} 
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="vagaDrive">REACT_APP_VAGA_DRIVE:</label>
+                    <input 
+                      type="number" 
+                      id="vagaDrive"
+                      value={vagaDrive} 
+                      onChange={(e) => setVagaDrive(Number(e.target.value))} 
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.sectionsRow}>
+            <div className={styles.configSection}>
+              <h3>Impressora</h3>
+              <div className={styles.formGrid}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="printerName">Nome da Impressora:</label>
+                  <input 
+                    type="text" 
+                    id="printerName"
+                    value={printerName} 
+                    onChange={(e) => setPrinterName(e.target.value)} 
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label htmlFor="printerPort">Porta da Impressora:</label>
+                  <select 
+                    id="printerPort"
+                    value={printerPort} 
+                    onChange={(e) => setPrinterPort(e.target.value)}
+                  >
+                    {COM_PORT_OPTIONS.map(port => (
+                      <option key={port} value={port}>{port}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className={styles.configSection}>
+              <h3>Fiscal e TEF/Pinpad</h3>
+              <div className={styles.formGroup}>
+                <label htmlFor="pinpadPort">Porta do Pinpad:</label>
+                <select 
+                  id="pinpadPort"
+                  value={pinpadPort} 
+                  onChange={(e) => setPinpadPort(e.target.value)}
+                >
+                  {COM_PORT_OPTIONS.map(port => (
+                    <option key={port} value={port}>{port}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
           
@@ -581,102 +633,6 @@ const ConfigJsonPage = (): React.ReactElement => {
           </div>
           
           <div className={styles.configSection}>
-            <h3>Configurações de Layout</h3>
-            <div className={styles.formGrid}>
-              <div className={styles.formGroup}>
-                <label htmlFor="layoutApp">FRONT_APP_LAYOUT:</label>
-                <select 
-                  id="layoutApp"
-                  value={layoutApp} 
-                  onChange={(e) => setLayoutApp(e.target.value)}
-                >
-                  <option value="AAONE">AAONE</option>
-                  <option value="BOBS">BOBS</option>
-                  <option value="HABIBS">HABIBS</option>
-                  <option value="RAGAZZO">RAGAZZO</option>
-                </select>
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="layoutStyle">REACT_APP_LAYOUT_STYLE:</label>
-                <select 
-                  id="layoutStyle"
-                  value={layoutStyle} 
-                  onChange={(e) => setLayoutStyle(e.target.value)}
-                >
-                  <option value="SHOP">SHOP</option>
-                  <option value="DRIVE">DRIVE</option>
-                </select>
-              </div>
-            </div>
-            
-            {layoutStyle === 'DRIVE' && (
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label htmlFor="pistaDrive">REACT_APP_PISTA_DRIVE:</label>
-                  <input 
-                    type="number" 
-                    id="pistaDrive"
-                    value={pistaDrive} 
-                    onChange={(e) => setPistaDrive(Number(e.target.value))} 
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label htmlFor="vagaDrive">REACT_APP_VAGA_DRIVE:</label>
-                  <input 
-                    type="number" 
-                    id="vagaDrive"
-                    value={vagaDrive} 
-                    onChange={(e) => setVagaDrive(Number(e.target.value))} 
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-          
-          <div className={styles.configSection}>
-            <h3>Impressora e Fiscal</h3>
-            <div className={styles.formGrid}>
-              <div className={styles.formGroup}>
-                <label htmlFor="printerName">Nome da Impressora:</label>
-                <input 
-                  type="text" 
-                  id="printerName"
-                  value={printerName} 
-                  onChange={(e) => setPrinterName(e.target.value)} 
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="printerPort">Porta da Impressora:</label>
-                <select 
-                  id="printerPort"
-                  value={printerPort} 
-                  onChange={(e) => setPrinterPort(e.target.value)}
-                >
-                  {COM_PORT_OPTIONS.map(port => (
-                    <option key={port} value={port}>{port}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-          
-          <div className={styles.configSection}>
-            <h3>TEF/Pinpad</h3>
-            <div className={styles.formGroup}>
-              <label htmlFor="pinpadPort">Porta do Pinpad:</label>
-              <select 
-                id="pinpadPort"
-                value={pinpadPort} 
-                onChange={(e) => setPinpadPort(e.target.value)}
-              >
-                {COM_PORT_OPTIONS.map(port => (
-                  <option key={port} value={port}>{port}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          
-          <div className={styles.configSection}>
             <h3>Configurações de URLs</h3>
             {ambiente === 'ONLINE' ? (
               <div className={styles.formGroup}>
@@ -697,15 +653,6 @@ const ConfigJsonPage = (): React.ReactElement => {
                     id="offlineIp"
                     value={offlineIp} 
                     onChange={(e) => setOfflineIp(e.target.value)} 
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label htmlFor="baseApiUrl">Base URL para Reshop:</label>
-                  <input 
-                    type="text" 
-                    id="baseApiUrl"
-                    value={baseApiUrl} 
-                    onChange={(e) => setBaseApiUrl(e.target.value)} 
                   />
                 </div>
               </div>
@@ -735,19 +682,6 @@ const ConfigJsonPage = (): React.ReactElement => {
           </div>
           
           <div className={styles.actionButtons}>
-            <button 
-              onClick={handleOpenFileDialog} 
-              className={styles.browseButton}
-            >
-              Procurar
-            </button>
-            <button 
-              onClick={handleApplyChanges} 
-              className={styles.applyButton}
-              disabled={!currentFilePath}
-            >
-              Aplicar Alterações
-            </button>
             <button 
               onClick={handleCopyToClipboard} 
               className={styles.copyButton}
@@ -787,21 +721,6 @@ const ConfigJsonPage = (): React.ReactElement => {
         </div>
       </div>
       
-      {configHistory.length > 0 && (
-        <div className={styles.historySection}>
-          <h3 className={styles.historyTitle}>Últimas Edições</h3>
-          <ul className={styles.historyList}>
-            {configHistory.map((item, index) => (
-              <li key={index} className={styles.historyItem}>
-                <span className={styles.historyItemText}>
-                  {item.path}{item.path.includes('editado manualmente') ? '' : ' (editado manualmente)'} - Editado em {new Date(item.lastModified).toLocaleString()}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       {/* Modal de senha */}
       {mostrarDialogoSenha && (
         <div className={styles.passwordModal}>
