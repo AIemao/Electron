@@ -13,6 +13,7 @@
     "resolveJsonModule": true,
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
+    "typeRoots": ["../../node_modules/@types", "../types"],
   },
-  "include": ["*.ts"]
+  "include": ["*.ts", "../types/electron.d.ts"],
 }

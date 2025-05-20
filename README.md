@@ -55,17 +55,20 @@ Implementação modular de uma aplicação desktop multiplataforma utilizando:
 ### Fluxo de Desenvolvimento
 1. Execute `npm run dev` para iniciar todo o ambiente de desenvolvimento com apenas um comando
    - Isso inicia tanto o servidor React quanto o aplicativo Electron em paralelo
-   - O transpile:electron é executado automaticamente como parte do processo
+   - O `transpile:electron` é executado automaticamente como parte do processo
 2. O processo de build completo segue a sequência:
    - `build` - Compila o código React
    - `transpile:electron` - Compila o código Electron
    - Distribuição com comando específico para plataforma (`dist:mac`, `dist:win` ou `dist:linux`)
 3. Testes antes de iniciar o build:
    - Antes de criar os instaladores finais com o electron-builder, você pode simular o comportamento de produção da sua aplicação rodando-a direto da pasta empacotada. Para isso: 
-   - `build` - Compila o código React
-   - `transpile:electron` - Compila o código Electron
-   - `npx cross-env NODE_ENV=production electron .`
+     - `build` - Compila o código React
+     - `transpile:electron` - Compila o código Electron
+     - `npx cross-env NODE_ENV=production electron .`
    - Dessa forma, você valida localmente se tudo está carregando corretamente antes de rodar `electron-builder --mac / --win / --linux` para gerar os instaladores finais.
+4. Limpeza de pastas:
+   - Utilize o comando `clean` para remover as pastas `dist-electron`, `dist-react` e `out`.
+   - Isso é necessário quando códigos importantes ou arquivos são alterados ou movidos, garantindo que os builds sejam gerados corretamente.
 
 ## 🔀 Instruções para Desenvolvimento
 

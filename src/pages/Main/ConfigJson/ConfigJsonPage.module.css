@@ -419,6 +419,13 @@
   cursor: pointer;
 }
 
+/* Help text styles */
+.helpText {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .mainContent {
@@ -475,4 +482,56 @@
     margin-left: 0;
     margin-top: 10px;
   }
+  .inputWithButton {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+  
+  .selectWithButton {
+    flex-grow: 1;
+    padding: 8px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+  }
+  
+  .refreshButton {
+    background: none;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    width: 38px;
+    transition: background-color 0.2s;
+  }
+  
+  .refreshButton:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .refreshButton:active {
+    background-color: #e0e0e0;
+    transform: scale(0.95);
+  }
+  
+  .refreshButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  .forceButton {
+    background-color: #ffc107;
+    color: #000;
+  }
+  
+  .forceButton:hover {
+    background-color: #e0a800;
+  }
 }
+
