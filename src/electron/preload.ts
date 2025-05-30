@@ -1,39 +1,82 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+// Tipos auxiliares
+type FirebirdConfig = {
+  host: string;
+  port: number;
+  database: string;
+  user: string;
+  password: string;
+  role?: string;
+  pageSize?: number;
+};
+
+type FirebirdExecResult = {
+  success: boolean;
+  result?: unknown;
+  error?: string;
+};
+
+type CheckUpgradeSQLResult = {
+  exists: boolean;
+  path: string;
+  error?: string;
+};
+
+type FirebirdFieldExistsResult = {
+  exists: boolean;
+  error?: string;
+};
+
 // Exponha apenas o necessário para o frontend
 contextBridge.exposeInMainWorld('electron', {
-  // API para leitura de arquivo
-  readConfigFile: async (path: string) => {
-    console.log(`[Preload] Chamando readConfigFile com caminho: ${path}`);
+  readConfigFile: async (path: string): Promise<{ success: boolean; content?: string; error?: string }> => {
     try {
       return await ipcRenderer.invoke('read-config-file', path);
     } catch (error) {
-      console.error('[Preload] Erro ao ler arquivo:', error);
       return { success: false, error: String(error) };
     }
   },
-  
-  // API para escrita de arquivo
-  writeConfigFile: async (path: string, content: string) => {
-    console.log(`[Preload] Chamando writeConfigFile para: ${path}`);
+
+  writeConfigFile: async (path: string, content: string): Promise<{ success: boolean; error?: string }> => {
     try {
       return await ipcRenderer.invoke('write-config-file', path, content);
     } catch (error) {
-      console.error('[Preload] Erro ao escrever arquivo:', error);
       return { success: false, error: String(error) };
     }
   },
-  
-  // Método opcional para obter caminhos
-  getFilePath: (name: string) => {
-    console.log(`[Preload] Obtendo caminho para: ${name}`);
+
+  getFilePath: (name: string): string => {
     try {
       return ipcRenderer.sendSync('get-file-path', name);
-    } catch (error) {
-      console.error('[Preload] Erro ao obter caminho:', error);
+    } catch {
       return '';
     }
-  }
+  },
+
+  firebirdExec: async (config: FirebirdConfig, sql: string): Promise<FirebirdExecResult> => {
+    try {
+      return await ipcRenderer.invoke('firebird-exec', config, sql);
+    } catch (error) {
+      return { success: false, error: String(error) };
+    }
+  },
+
+  firebirdFieldExists: async (config: FirebirdConfig, table: string, field: string): Promise<FirebirdFieldExistsResult> => {
+    try {
+      return await ipcRenderer.invoke('firebird-field-exists', config, table, field);
+    } catch (error) {
+      return { exists: false, error: String(error) };
+    }
+  },
+
+  checkUpgradeSQL: async (folderPath?: string): Promise<CheckUpgradeSQLResult> => {
+    try {
+      return await ipcRenderer.invoke('check-upgradesql', folderPath);
+    } catch (error) {
+      return { exists: false, path: '', error: String(error) };
+    }
+  },
 });
 
 console.log('[Preload] Script de preload carregado com sucesso!');

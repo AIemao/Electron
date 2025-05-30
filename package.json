@@ -21,6 +21,7 @@
     "@monaco-editor/react": "^4.7.0",
     "electron-devtools-installer": "^4.0.0",
     "electron-react-vite": "file:",
+    "node-firebird": "^1.1.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.22.0",
